@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Page Title</title>
+
+    <!-- Including the main.css file for styling -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Including the Font Awesome CSS library for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+        <!-- Navigation bar -->
+        <div class="topnav" id="myTopnav">
+                <a href="index.html">Home</a>
+                <a href="section1.html">Meet the Team</a>
+                <a href="section2.html">Hype Video</a>
+                <a href="section3.html">Other Athletics</a>
+            <a class="active" href="see_also.html">Countdown till next game</a>
+                <a href="javascript:void(0);" class="icon">
+                        <i class="fa fa-bars"></i>
+                </a>
+        </div>
+
+        <!-- Page content -->
+        <div class="content">
+                <h2>Countdown till next game</h2>
+                <p id="countdown" style="text-align:center; font-size:48px; margin-top:12px;">Loading...</p>
+        </div>
+
+        <script>
+        // Helper: returns the next upcoming Saturday at 12:30 PM (local time)
+        function getNextSaturday1230(now) {
+            // clone date
+            var d = new Date(now.getTime());
+            var day = d.getDay(); // 0=Sun, 6=Sat
+            var daysUntilSat = (6 - day + 7) % 7; // 0..6 days until Saturday
+            // If it's Saturday earlier than 12:30, we should target today at 12:30
+            var target = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 30, 0, 0);
+            if (day !== 6 || now > target) {
+                // advance to next Saturday
+                var addDays = daysUntilSat === 0 ? 7 : daysUntilSat;
+                target.setDate(target.getDate() + addDays);
+            }
+            return target;
+        }
+
+        (function() {
+            var display = document.getElementById('countdown');
+            var now = new Date();
+            var target = getNextSaturday1230(now);
+
+            function update() {
+                var now = new Date();
+                var diff = target.getTime() - now.getTime();
+                if (diff <= 0) {
+                    // Add exactly 7 days and continue counting
+                    target = new Date(target.getTime() + 7 * 24 * 60 * 60 * 1000);
+                    diff = target.getTime() - now.getTime();
+                }
+
+                var days = Math.floor(diff / (1000*60*60*24));
+                var hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+                var minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+                var seconds = Math.floor((diff % (1000*60)) / 1000);
+
+                display.textContent = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+            }
+
+            // initial update and interval
+            update();
+            setInterval(update, 1000);
+        })();
+        </script>
+
+    <!-- Including the main.js file for JavaScript functionality -->
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
